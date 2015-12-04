@@ -183,6 +183,19 @@
       <arg name="y" type="int"/>
     </request>
 
+    <request name="get_tooltip">
+      <description summary="assign the xdg_tooltip window type">
+	This request tsets the surface type of the xdg_surface to xdg_tooltip.
+
+	See the documentation of xdg_tooltip for more details about what an
+	xdg_tooltip is and how it is used.
+      </description>
+      <arg name="id" type="new_id" interface="zxdg_tooltip_v6"/>
+      <arg name="parent" type="object" interface="zxdg_surface_v6"/>
+      <arg name="x" type="int"/>
+      <arg name="y" type="int"/>
+    </request>
+
     <request name="set_window_geometry">
       <description summary="set the new window geometry">
 	The window geometry of a window is its "visible bounds" from the
@@ -666,5 +679,33 @@
       </description>
     </event>
 
+  </interface>
+
+  <interface name="zxdg_tooltip_v6">
+    <description summary="tooltip surface">
+      This interface extends xdg_surface by assigning it the xdg_tooltip
+      window type.
+
+      An xdg tooltip is temporary a surface that is part of another xdg_surface
+      (such as xdg_toplevel or xdg_popup) such as a tooltip above a UI widget. It
+      will always be mapped above both its parent and if the parent has a
+      xdg_popup child it will also be mapped above that and all other possible
+      chained xdg_popup surfaces.
+
+      The parent surface must be either have the window type xdg_toplevel or
+      xdg_popup.
+
+      Being different from xdg_popup, it does not take an active grab while
+      being mapped, and it will never be automatically dismissed by any
+      predefined user interaction. The client must itself unmap it using the
+      xdg_tooltip.destroy request.
+
+      If for some reason its parent is unmapped, for example if the parent is a
+      popup being dismissed, the tooltip will be unmapped as well.
+    </description>
+
+    <request name="destroy" type="destructor">
+      Unmap the tooltip surface and destroy the object.
+    </request>
   </interface>
 </protocol>
